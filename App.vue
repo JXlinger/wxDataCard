@@ -2,17 +2,26 @@
 export default {
     globalData: {
         UserInfo: null,
-        tableInfo: {
-            has: false,
-            name: null,
-            sex: null,
-            age: null,
-            corporation: null,
-            maxim: null
+        tableInfo: null,
+        systemInfo: null
+    },
+    onLaunch: function() {
+        const _self = this;
+        if (this.globalData.UserInfo) {
+            uni.switchTab({
+                url: '/pages/index/index'
+            });
+        } else {
+            uni.getUserInfo({
+                success(res) {
+                    _self.globalData.UserInfo = res.userInfo;
+                }
+            });
         }
     },
-    onLaunch: function() {},
-    onShow: function() {},
+    onShow: function() {
+        console.log(this.globalData);
+    },
     onHide: function() {}
 };
 </script>

@@ -6,14 +6,14 @@
             </view>
             <view class="card_info">
                 <view>{{ tableInfo.name }}</view>
-                <view>{{ tableInfo.sex == 0 ? '女' : '男' }} <text :class="tableInfo.sex == true ? 'women' : 'man'">{{ tableInfo.sex == true ? '♀' : '♂' }}</text></view>
+                <view>{{ tableInfo.sex == true ? '女' : '男' }} <text :class="tableInfo.sex == true ? 'women' : 'man'">{{ tableInfo.sex == true ? '♂' : '♀' }}</text></view>
                 <view>{{ tableInfo.age }}</view>
                 <view>{{ tableInfo.corporation }}</view>
                 <view>{{ tableInfo.maxim }}</view>
             </view>
         </view>
         <view class="want_">
-            <button @tap="setTableInfo" size="mini" type="primary">我也要做名片</button>
+            <button open-type="getUserInfo" @getuserinfo="setTableInfo" size="mini" type="primary">我也要做名片</button>
         </view>
 	</view>
 </template>
@@ -39,7 +39,9 @@
         onShow() {
         },
 		methods: {
-            setTableInfo(){
+            setTableInfo(e){
+                console.log(e);
+                app.globalData.UserInfo = e.detail.userInfo;
                 uni.navigateTo({
                     url: '../user/index'
                 })
@@ -72,7 +74,6 @@
             image{
                 width: 100%;
                 border-radius: 50%;
-                display: none;
             }
         }
         .card_info{

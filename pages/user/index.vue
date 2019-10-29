@@ -1,7 +1,7 @@
 <template>
     <view class="user">
         <view class="top">制作你的名片</view>
-        <form @submit="formSubmit" @reset="formReset">
+        <form @submit="formSubmit">
             <view class="input_item input_name">
                 <view>你的大名</view>
                 <input v-model="tableInfo.name" type="text" maxlength="24" placeholder="名字" confirm-type="next" />
@@ -23,6 +23,7 @@
                     max="80"
                     step="1"
                     v-model="tableInfo.age"
+                    @change="sliderChange"
                 />
                 <view>岁</view>
             </view>
@@ -35,6 +36,10 @@
                 <view class="area_text">BalaBala大道理</view>
                 <view class="area_input"><textarea v-model="tableInfo.maxim" maxlength="200" placeholder="你的座右铭" auto-height></textarea></view>
             </view>
+            <view class="submit">
+                <button type="primary" size="default" @tap="toCreatCanvas">生成图片名片</button>
+                <button type="primary" size="default" @tap="toCreatCard">生成普通名片</button>
+            </view>
         </form>
     </view>
 </template>
@@ -45,11 +50,6 @@ export default {
     data() {
         return {
             tableInfo: {
-                name: '',
-                sex: null,
-                age: '',
-                corporation: '',
-                maxim: ''
             },
             corpArray: [
                 "gou'qie'tou'sheng",
@@ -65,13 +65,121 @@ export default {
         };
     },
     onLoad() {
-        console.log(app.globalData);
+        if(!this.tableInfo.sex){
+            this.tableInfo.sex = false
+        }
+        if(!this.tableInfo){
+            this.tableInfo.has = false
+        }else{
+            this.tableInfo.has = true
+        }
         var corpArray = this.corpArray;
         this.areaText = corpArray[Math.round(Math.random()*(corpArray.length-1))];
     },
     methods: {
         sexChange(e) {
-            // console.log(e.target.value);
+             this.tableInfo.sex = e.target.value
+        },
+        sliderChange(e){
+            this.tableInfo.age = e.target.value
+        },
+        formVerification(){},
+        toCreatCanvas(e){
+            if(!this.tableInfo.name){
+                uni.showToast({
+                    title: '叫火云邪神也行啊！',
+                    image: '../../static/image/mei_ming_zi.jpg',
+                    duration: 3000
+                });
+                return;
+            }else if(this.tableInfo.age < 6 || !this.tableInfo.age){
+                uni.showToast({
+                    title: '你还没到6岁？',
+                    image: '../../static/image/child_can_not_play_phone.jpg',
+                    duration: 3000
+                });
+                return;
+            }else if(!this.tableInfo.corporation){
+                uni.showToast({
+                    image: '../../static/image/yaseiyalai.jpg',
+                    title: '写个精神病院吧！',
+                    duration: 3000
+                })
+                return;
+            }else if(!this.tableInfo.maxim){
+                uni.showToast({
+                    image: '../../static/image/yaseiyalai.jpg',
+                    title: '吹个牛逼也不会？',
+                    duration: 3000
+                })
+                return;
+            }else{
+                app.globalData.tableInfo = this.tableInfo;
+                let times = Math.floor(1500 + Math.random()*4000);
+                uni.showLoading({
+                    title: '正在生成中...',
+                    success() {
+                        setTimeout(() => {
+                           uni.navigateTo({
+                               url: '../canvas/index',
+                               success() {
+                                  uni.hideLoading();
+                               }
+                           }) 
+                        },times)
+                        
+                    }
+                })
+            }
+                
+        },
+        toCreatCard(){
+            if(!this.tableInfo.name){
+                uni.showToast({
+                    title: '叫火云邪神也行啊！',
+                    image: '../../static/image/mei_ming_zi.jpg',
+                    duration: 3000
+                });
+                return;
+            }else if(this.tableInfo.age < 6 || !this.tableInfo.age){
+                uni.showToast({
+                    title: '你还没到6岁？',
+                    image: '../../static/image/child_can_not_play_phone.jpg',
+                    duration: 3000
+                });
+                return;
+            }else if(!this.tableInfo.corporation){
+                uni.showToast({
+                    image: '../../static/image/yaseiyalai.jpg',
+                    title: '写个精神病院吧！',
+                    duration: 3000
+                })
+                return;
+            }else if(!this.tableInfo.maxim){
+                uni.showToast({
+                    image: '../../static/image/yaseiyalai.jpg',
+                    title: '吹个牛逼也不会？',
+                    duration: 3000
+                })
+                return;
+            }else{
+                let times = Math.floor(1500 + Math.random()*4000);
+                app.globalData.tableInfo = this.tableInfo;
+                uni.showLoading({
+                    title: '正在生成中...',
+                    success() {
+                        setTimeout(() => {
+                           uni.navigateTo({
+                               url: '../creat/index',
+                               success() {
+                                  uni.hideLoading();
+                               }
+                           }) 
+                        },times)
+                        
+                    }
+                })
+            }
         }
     }
 };
@@ -175,6 +283,23 @@ export default {
         textarea {
             width: auto;
         }
+    }
+    .submit{
+        width: 100%;
+        position: absolute;
+        bottom: 30upx;
+        left: 50%;
+        transform: translateX(-50%);
+        button{
+            transform: scale(.9);
+            background: rgba(255,185,41);
+            color: #FFFFFF;
+            &:last-child{
+                background: #4CD964;
+                margin-top: 10upx;
+            }
+        }
+        
     }
 }
 </style>
